@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 // MongoDB Atlas connection (update with your connection string)
@@ -138,7 +138,7 @@ async function updateWalletAtomic(cardUid, amount, transactionType, reason = nul
             // 3. Record transaction with user context
             const transaction = {
                 cardUid,
-                userId: userId || null, // Add user context
+                userId: userId ? new ObjectId(userId) : null, // Convert userId to ObjectId if provided
                 type: transactionType,
                 amount: Math.abs(amount),
                 previousBalance,
@@ -225,9 +225,12 @@ async function getWalletBalance(cardUid) {
 // Get transaction history for a user (all their cards)
 async function getUserTransactionHistory(userId, limit = 10) {
     try {
+        // Convert userId string to ObjectId for user_cards query
+        const objectId = new ObjectId(userId);
+
         // Get all cards owned by the user
         const userCards = await db.collection('user_cards')
-            .find({ userId })
+            .find({ userId: objectId })
             .toArray();
 
         if (userCards.length === 0) {
@@ -240,7 +243,7 @@ async function getUserTransactionHistory(userId, limit = 10) {
         const transactions = await db.collection('transactions')
             .find({
                 $or: [
-                    { userId: userId }, // Direct user transactions
+                    { userId: objectId }, // Direct user transactions
                     { cardUid: { $in: cardUids } } // Card-based transactions
                 ]
             })
@@ -261,8 +264,9 @@ async function getTransactionHistory(cardUid, limit = 10, userId = null) {
 
         // If userId is provided, validate that user owns the card
         if (userId) {
+            const objectId = new ObjectId(userId);
             const userCard = await db.collection('user_cards')
-                .findOne({ userId, cardUid });
+                .findOne({ userId: objectId, cardUid });
 
             if (!userCard) {
                 throw new Error('Access denied: Card not owned by user');
@@ -286,15 +290,18 @@ async function assignCardToUser(userId, cardUid) {
     try {
         const userCardsCollection = db.collection('user_cards');
 
+        // Convert userId string to ObjectId
+        const objectId = new ObjectId(userId);
+
         // Check if assignment already exists
-        const existing = await userCardsCollection.findOne({ userId, cardUid });
+        const existing = await userCardsCollection.findOne({ userId: objectId, cardUid });
         if (existing) {
             return { success: true, message: 'Card already assigned to user' };
         }
 
         // Create the assignment
         await userCardsCollection.insertOne({
-            userId,
+            userId: objectId,
             cardUid,
             assignedAt: new Date()
         });
@@ -308,8 +315,11 @@ async function assignCardToUser(userId, cardUid) {
 // Get all cards owned by a user
 async function getUserCards(userId) {
     try {
+        // Convert userId string to ObjectId
+        const objectId = new ObjectId(userId);
+
         const userCards = await db.collection('user_cards')
-            .find({ userId })
+            .find({ userId: objectId })
             .toArray();
 
         // Get card details and balances
@@ -411,6 +421,9 @@ async function updateUserProfile(userId, updateData) {
     try {
         const usersCollection = db.collection('users');
 
+        // Convert userId string to ObjectId
+        const objectId = new ObjectId(userId);
+
         // Remove undefined fields
         const cleanUpdateData = Object.fromEntries(
             Object.entries(updateData).filter(([_, value]) => value !== undefined)
@@ -419,7 +432,7 @@ async function updateUserProfile(userId, updateData) {
         cleanUpdateData.updatedAt = new Date();
 
         const result = await usersCollection.updateOne(
-            { _id: userId },
+            { _id: objectId },
             { $set: cleanUpdateData }
         );
 
@@ -428,7 +441,7 @@ async function updateUserProfile(userId, updateData) {
         }
 
         // Return updated user
-        const updatedUser = await usersCollection.findOne({ _id: userId });
+        const updatedUser = await usersCollection.findOne({ _id: objectId });
         return { success: true, user: updatedUser };
     } catch (error) {
         throw new Error(`Failed to update user profile: ${error.message}`);
