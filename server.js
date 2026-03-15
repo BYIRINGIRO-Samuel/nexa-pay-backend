@@ -21,6 +21,12 @@ const {
   findUserByEmail,
   findUserByUsername,
   updateUserProfile,
+  createNotification,
+  getUserNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  deleteNotification,
+  getUnreadNotificationCount,
   closeDB
 } = require('./database');
 
@@ -419,6 +425,15 @@ app.post('/topup', authenticateToken, async (req, res) => {
 
     console.log(`✓ Top-up successful: ${uid} +${amount} by user ${req.user.username}`);
 
+    // Create notification for successful top-up
+    await createNotification(
+      userId,
+      'transaction',
+      'Top-up Successful',
+      `Successfully added $${amount} to card ${uid}. New balance: $${result.newBalance}`,
+      { cardUid: uid, amount, newBalance: result.newBalance, type: 'TOPUP' }
+    );
+
     // Publish to MQTT for device confirmation
     if (mqttClient && mqttClient.connected) {
       mqttClient.publish(
@@ -523,6 +538,15 @@ app.post('/pay', authenticateToken, async (req, res) => {
     }
 
     console.log(`✓ Payment successful: ${uid} -${totalAmount} by user ${req.user.username}`);
+
+    // Create notification for successful payment
+    await createNotification(
+      userId,
+      'transaction',
+      'Payment Processed',
+      `Payment of $${totalAmount} processed successfully. New balance: $${result.newBalance}`,
+      { cardUid: uid, amount: totalAmount, newBalance: result.newBalance, type: 'PAYMENT', productId, quantity }
+    );
 
     // Publish to MQTT for device confirmation
     if (mqttClient && mqttClient.connected) {
@@ -761,6 +785,115 @@ app.put('/user/profile', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Profile update error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ========================================
+// NOTIFICATION ENDPOINTS
+// ========================================
+
+/**
+ * GET /user/notifications
+ * Get user notifications (Protected)
+ */
+app.get('/user/notifications', authenticateToken, async (req, res) => {
+  try {
+    const { limit } = req.query;
+    const userId = req.user.userId;
+
+    const notifications = await getUserNotifications(userId, parseInt(limit) || 20);
+
+    res.json({
+      success: true,
+      notifications,
+      count: notifications.length
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * GET /user/notifications/unread-count
+ * Get unread notification count (Protected)
+ */
+app.get('/user/notifications/unread-count', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const count = await getUnreadNotificationCount(userId);
+
+    res.json({
+      success: true,
+      unreadCount: count
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * PUT /user/notifications/:id/read
+ * Mark notification as read (Protected)
+ */
+app.put('/user/notifications/:id/read', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    const result = await markNotificationAsRead(userId, id);
+
+    if (!result.success) {
+      return res.status(404).json({ success: false, error: 'Notification not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Notification marked as read'
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * PUT /user/notifications/mark-all-read
+ * Mark all notifications as read (Protected)
+ */
+app.put('/user/notifications/mark-all-read', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const result = await markAllNotificationsAsRead(userId);
+
+    res.json({
+      success: true,
+      message: `${result.modifiedCount} notifications marked as read`
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * DELETE /user/notifications/:id
+ * Delete notification (Protected)
+ */
+app.delete('/user/notifications/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    const result = await deleteNotification(userId, id);
+
+    if (!result.success) {
+      return res.status(404).json({ success: false, error: 'Notification not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Notification deleted successfully'
+    });
+  } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });

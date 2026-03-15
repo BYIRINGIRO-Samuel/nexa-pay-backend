@@ -78,6 +78,14 @@ async function initializeCollections() {
             console.log("✓ Created 'users' collection");
         }
 
+        if (!collectionNames.includes('notifications')) {
+            await db.createCollection('notifications');
+            await db.collection('notifications').createIndex({ userId: 1 });
+            await db.collection('notifications').createIndex({ createdAt: -1 });
+            await db.collection('notifications').createIndex({ read: 1 });
+            console.log("✓ Created 'notifications' collection");
+        }
+
     } catch (error) {
         console.error("Collection initialization error:", error.message);
     }
@@ -456,6 +464,111 @@ async function closeDB() {
     }
 }
 
+// Notification management functions
+async function createNotification(userId, type, title, message, metadata = null) {
+    try {
+        const notificationsCollection = db.collection('notifications');
+
+        const notification = {
+            userId: new ObjectId(userId),
+            type,
+            title,
+            message,
+            metadata,
+            read: false,
+            createdAt: new Date()
+        };
+
+        const result = await notificationsCollection.insertOne(notification);
+        return { success: true, notificationId: result.insertedId };
+    } catch (error) {
+        throw new Error(`Failed to create notification: ${error.message}`);
+    }
+}
+
+async function getUserNotifications(userId, limit = 20) {
+    try {
+        const notificationsCollection = db.collection('notifications');
+        const objectId = new ObjectId(userId);
+
+        const notifications = await notificationsCollection
+            .find({ userId: objectId })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .toArray();
+
+        return notifications;
+    } catch (error) {
+        throw new Error(`Failed to fetch notifications: ${error.message}`);
+    }
+}
+
+async function markNotificationAsRead(userId, notificationId) {
+    try {
+        const notificationsCollection = db.collection('notifications');
+        const userObjectId = new ObjectId(userId);
+        const notifObjectId = new ObjectId(notificationId);
+
+        const result = await notificationsCollection.updateOne(
+            { _id: notifObjectId, userId: userObjectId },
+            { $set: { read: true, readAt: new Date() } }
+        );
+
+        return { success: result.matchedCount > 0 };
+    } catch (error) {
+        throw new Error(`Failed to mark notification as read: ${error.message}`);
+    }
+}
+
+async function markAllNotificationsAsRead(userId) {
+    try {
+        const notificationsCollection = db.collection('notifications');
+        const objectId = new ObjectId(userId);
+
+        const result = await notificationsCollection.updateMany(
+            { userId: objectId, read: false },
+            { $set: { read: true, readAt: new Date() } }
+        );
+
+        return { success: true, modifiedCount: result.modifiedCount };
+    } catch (error) {
+        throw new Error(`Failed to mark all notifications as read: ${error.message}`);
+    }
+}
+
+async function deleteNotification(userId, notificationId) {
+    try {
+        const notificationsCollection = db.collection('notifications');
+        const userObjectId = new ObjectId(userId);
+        const notifObjectId = new ObjectId(notificationId);
+
+        const result = await notificationsCollection.deleteOne({
+            _id: notifObjectId,
+            userId: userObjectId
+        });
+
+        return { success: result.deletedCount > 0 };
+    } catch (error) {
+        throw new Error(`Failed to delete notification: ${error.message}`);
+    }
+}
+
+async function getUnreadNotificationCount(userId) {
+    try {
+        const notificationsCollection = db.collection('notifications');
+        const objectId = new ObjectId(userId);
+
+        const count = await notificationsCollection.countDocuments({
+            userId: objectId,
+            read: false
+        });
+
+        return count;
+    } catch (error) {
+        throw new Error(`Failed to get unread notification count: ${error.message}`);
+    }
+}
+
 module.exports = {
     connectDB,
     getDB,
@@ -473,5 +586,11 @@ module.exports = {
     findUserByEmail,
     findUserByUsername,
     updateUserProfile,
+    createNotification,
+    getUserNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    deleteNotification,
+    getUnreadNotificationCount,
     closeDB
 };
