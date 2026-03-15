@@ -20,6 +20,7 @@ const {
   createUser,
   findUserByEmail,
   findUserByUsername,
+  updateUserProfile,
   closeDB
 } = require('./database');
 
@@ -664,6 +665,102 @@ app.post('/user/assign-card', authenticateToken, async (req, res) => {
 
     res.json(result);
   } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * PUT /user/profile
+ * Update user profile (Protected)
+ */
+app.put('/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const { username, email, currentPassword, newPassword } = req.body;
+    const userId = req.user.userId;
+
+    // Validation
+    if (!username && !email && !newPassword) {
+      return res.status(400).json({ success: false, error: 'No fields to update' });
+    }
+
+    // If updating password, verify current password
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ success: false, error: 'Current password required' });
+      }
+
+      // Get current user to verify password
+      const currentUser = await findUserByEmail(req.user.email);
+      if (!currentUser) {
+        return res.status(404).json({ success: false, error: 'User not found' });
+      }
+
+      // Verify current password
+      const isValidPassword = await bcrypt.compare(currentPassword, currentUser.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ success: false, error: 'Current password is incorrect' });
+      }
+
+      // Validate new password
+      if (newPassword.length < 6) {
+        return res.status(400).json({ success: false, error: 'New password must be at least 6 characters long' });
+      }
+    }
+
+    // Check for duplicate username/email (excluding current user)
+    if (username && username !== req.user.username) {
+      const existingUser = await findUserByUsername(username);
+      if (existingUser && existingUser._id.toString() !== userId.toString()) {
+        return res.status(400).json({ success: false, error: 'Username already exists' });
+      }
+    }
+
+    if (email && email !== req.user.email) {
+      const existingUser = await findUserByEmail(email);
+      if (existingUser && existingUser._id.toString() !== userId.toString()) {
+        return res.status(400).json({ success: false, error: 'Email already exists' });
+      }
+    }
+
+    // Prepare update data
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (email) updateData.email = email;
+    if (newPassword) {
+      updateData.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    // Update user profile
+    const result = await updateUserProfile(userId, updateData);
+
+    if (!result.success) {
+      return res.status(500).json({ success: false, error: 'Failed to update profile' });
+    }
+
+    // Generate new JWT with updated info
+    const token = jwt.sign(
+      {
+        userId: result.user._id,
+        username: result.user.username,
+        email: result.user.email,
+        role: result.user.role
+      },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      token,
+      user: {
+        username: result.user.username,
+        email: result.user.email,
+        role: result.user.role
+      }
+    });
+  } catch (error) {
+    console.error('Profile update error:', error.message);
     res.status(500).json({ success: false, error: error.message });
   }
 });

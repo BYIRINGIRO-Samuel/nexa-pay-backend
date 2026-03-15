@@ -406,6 +406,35 @@ async function findUserByUsername(username) {
     }
 }
 
+// Update user profile
+async function updateUserProfile(userId, updateData) {
+    try {
+        const usersCollection = db.collection('users');
+
+        // Remove undefined fields
+        const cleanUpdateData = Object.fromEntries(
+            Object.entries(updateData).filter(([_, value]) => value !== undefined)
+        );
+
+        cleanUpdateData.updatedAt = new Date();
+
+        const result = await usersCollection.updateOne(
+            { _id: userId },
+            { $set: cleanUpdateData }
+        );
+
+        if (result.matchedCount === 0) {
+            throw new Error('User not found');
+        }
+
+        // Return updated user
+        const updatedUser = await usersCollection.findOne({ _id: userId });
+        return { success: true, user: updatedUser };
+    } catch (error) {
+        throw new Error(`Failed to update user profile: ${error.message}`);
+    }
+}
+
 // Close database connection
 async function closeDB() {
     if (client) {
@@ -430,5 +459,6 @@ module.exports = {
     createUser,
     findUserByEmail,
     findUserByUsername,
+    updateUserProfile,
     closeDB
 };
