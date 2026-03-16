@@ -2,7 +2,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
 // MongoDB Atlas connection (update with your connection string)
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://byiringirosamuel533_db_user:FfO59CabV9OMNrMK@cluster0.8t1pfgh.mongodb.net/?appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const DB_NAME = "smartpay";
 
 let client = null;
