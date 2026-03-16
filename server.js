@@ -607,6 +607,32 @@ app.get('/products', authenticateToken, async (req, res) => {
 });
 
 /**
+ * GET /products/:id
+ * Retrieve a single product by ID (Protected)
+ */
+app.get('/products/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const products = await getProducts();
+    const product = products.find(p => p._id.toString() === id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: 'Product not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      product
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
  * POST /seed-products
  * Manually seed products (Protected - Admin only)
  */
