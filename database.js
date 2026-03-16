@@ -361,7 +361,7 @@ async function getProducts() {
     }
 }
 
-// Seed default products (Transport & Buy)
+// Seed default products with real e-commerce data
 async function seedProducts() {
     try {
         const productsCollection = db.collection('products');
@@ -370,21 +370,105 @@ async function seedProducts() {
         if (count === 0) {
             const defaultProducts = [
                 {
-                    name: "Transport",
-                    price: 200,
+                    name: "Classic White T-Shirt",
+                    price: 2999, // $29.99 in cents
+                    originalPrice: 3999, // $39.99 in cents
+                    category: "Clothing",
+                    description: "Premium cotton classic white t-shirt, perfect for everyday wear",
+                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
+                    discount: 25,
+                    inStock: true,
                     active: true,
                     createdAt: new Date()
                 },
                 {
-                    name: "Buy",
-                    price: 100,
+                    name: "Denim Jeans",
+                    price: 7999, // $79.99 in cents
+                    originalPrice: 9999, // $99.99 in cents
+                    category: "Clothing",
+                    description: "High-quality denim jeans with perfect fit and comfort",
+                    image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop",
+                    discount: 20,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Summer Dress",
+                    price: 5999, // $59.99 in cents
+                    originalPrice: 8999, // $89.99 in cents
+                    category: "Clothing",
+                    description: "Elegant summer dress perfect for casual and formal occasions",
+                    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop",
+                    discount: 33,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Leather Jacket",
+                    price: 12999, // $129.99 in cents
+                    originalPrice: 15999, // $159.99 in cents
+                    category: "Clothing",
+                    description: "Premium leather jacket with modern design and superior quality",
+                    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",
+                    discount: 19,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Casual Sneakers",
+                    price: 8999, // $89.99 in cents
+                    originalPrice: 11999, // $119.99 in cents
+                    category: "Footwear",
+                    description: "Comfortable casual sneakers for everyday activities",
+                    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
+                    discount: 25,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Wireless Headphones",
+                    price: 14999, // $149.99 in cents
+                    originalPrice: 19999, // $199.99 in cents
+                    category: "Electronics",
+                    description: "High-quality wireless headphones with noise cancellation",
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+                    discount: 25,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Smartphone Case",
+                    price: 1999, // $19.99 in cents
+                    originalPrice: 2999, // $29.99 in cents
+                    category: "Electronics",
+                    description: "Protective smartphone case with elegant design",
+                    image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop",
+                    discount: 33,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Coffee Mug",
+                    price: 1299, // $12.99 in cents
+                    originalPrice: 1799, // $17.99 in cents
+                    category: "Home",
+                    description: "Premium ceramic coffee mug for your morning coffee",
+                    image: "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=400&fit=crop",
+                    discount: 28,
+                    inStock: true,
                     active: true,
                     createdAt: new Date()
                 }
             ];
 
             await productsCollection.insertMany(defaultProducts);
-            console.log("✓ Default products seeded (Transport: 200, Buy: 100)");
+            console.log("✓ E-commerce products seeded with images and details");
         }
     } catch (error) {
         console.error("Product seeding error:", error.message);
