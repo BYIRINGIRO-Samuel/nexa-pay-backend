@@ -591,9 +591,9 @@ app.post('/pay', authenticateToken, async (req, res) => {
 
 /**
  * GET /products
- * Retrieve all active products
+ * Retrieve all active products (Protected)
  */
-app.get('/products', async (req, res) => {
+app.get('/products', authenticateToken, async (req, res) => {
   try {
     const products = await getProducts();
     res.json({
@@ -601,6 +601,33 @@ app.get('/products', async (req, res) => {
       products
     });
   } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * POST /seed-products
+ * Manually seed products (Protected - Admin only)
+ */
+app.post('/seed-products', authenticateToken, async (req, res) => {
+  try {
+    // Only admin users can seed products
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Access denied: Admin role required'
+      });
+    }
+
+    console.log('🌱 Manual product seeding requested by:', req.user.username);
+    await seedProducts();
+
+    res.json({
+      success: true,
+      message: 'Products seeded successfully'
+    });
+  } catch (error) {
+    console.error('Manual product seeding error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
