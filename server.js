@@ -17,6 +17,7 @@ const {
   getUserCards,
   getProducts,
   seedProducts,
+  forceSeedProducts,
   createUser,
   findUserByEmail,
   findUserByUsername,
@@ -628,6 +629,34 @@ app.post('/seed-products', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Manual product seeding error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/**
+ * POST /force-seed-products
+ * Force seed products (clears existing and re-seeds) - Admin only
+ */
+app.post('/force-seed-products', authenticateToken, async (req, res) => {
+  try {
+    // Only admin users can force seed products
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Access denied: Admin role required'
+      });
+    }
+
+    console.log('🔄 Force product seeding requested by:', req.user.username);
+    const result = await forceSeedProducts();
+
+    res.json({
+      success: true,
+      message: 'Products force-seeded successfully',
+      result
+    });
+  } catch (error) {
+    console.error('Force product seeding error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

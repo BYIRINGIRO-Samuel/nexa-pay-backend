@@ -367,6 +367,8 @@ async function seedProducts() {
         const productsCollection = db.collection('products');
         const count = await productsCollection.countDocuments();
 
+        console.log(`📦 Current products in database: ${count}`);
+
         if (count === 0) {
             const defaultProducts = [
                 {
@@ -377,6 +379,7 @@ async function seedProducts() {
                     description: "Premium cotton classic white t-shirt, perfect for everyday wear",
                     image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
                     discount: 25,
+                    rating: 4.8,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -389,6 +392,7 @@ async function seedProducts() {
                     description: "High-quality denim jeans with perfect fit and comfort",
                     image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop",
                     discount: 20,
+                    rating: 4.6,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -401,6 +405,7 @@ async function seedProducts() {
                     description: "Elegant summer dress perfect for casual and formal occasions",
                     image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop",
                     discount: 33,
+                    rating: 4.9,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -413,6 +418,7 @@ async function seedProducts() {
                     description: "Premium leather jacket with modern design and superior quality",
                     image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",
                     discount: 19,
+                    rating: 4.7,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -425,6 +431,7 @@ async function seedProducts() {
                     description: "Comfortable casual sneakers for everyday activities",
                     image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
                     discount: 25,
+                    rating: 4.5,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -437,6 +444,7 @@ async function seedProducts() {
                     description: "High-quality wireless headphones with noise cancellation",
                     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
                     discount: 25,
+                    rating: 4.8,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -449,6 +457,7 @@ async function seedProducts() {
                     description: "Protective smartphone case with elegant design",
                     image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop",
                     discount: 33,
+                    rating: 4.6,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
@@ -461,17 +470,47 @@ async function seedProducts() {
                     description: "Premium ceramic coffee mug for your morning coffee",
                     image: "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=400&fit=crop",
                     discount: 28,
+                    rating: 4.4,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
                 }
             ];
 
-            await productsCollection.insertMany(defaultProducts);
+            console.log(`🌱 Inserting ${defaultProducts.length} products...`);
+            const result = await productsCollection.insertMany(defaultProducts);
+            console.log(`✅ Successfully inserted ${result.insertedCount} products`);
             console.log("✓ E-commerce products seeded with images and details");
+
+            // Log the inserted products
+            defaultProducts.forEach((product, index) => {
+                console.log(`   ${index + 1}. ${product.name} - $${(product.price / 100).toFixed(2)} (${product.category})`);
+            });
+        } else {
+            console.log("ℹ️  Products already exist in database, skipping seeding");
         }
     } catch (error) {
-        console.error("Product seeding error:", error.message);
+        console.error("❌ Product seeding error:", error.message);
+        throw error;
+    }
+}
+
+// Force seed products (for manual seeding)
+async function forceSeedProducts() {
+    try {
+        const productsCollection = db.collection('products');
+
+        // Clear existing products
+        console.log('🗑️  Clearing existing products...');
+        await productsCollection.deleteMany({});
+
+        // Seed new products
+        await seedProducts();
+
+        return { success: true, message: 'Products force-seeded successfully' };
+    } catch (error) {
+        console.error("❌ Force seed error:", error.message);
+        throw error;
     }
 }
 
@@ -666,6 +705,7 @@ module.exports = {
     getUserCards,
     getProducts,
     seedProducts,
+    forceSeedProducts,
     createUser,
     findUserByEmail,
     findUserByUsername,
