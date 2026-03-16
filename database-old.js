@@ -361,23 +361,23 @@ async function getProducts() {
     }
 }
 
-// Seed default cars with real automotive data
+// Seed default products with real e-commerce data
 async function seedProducts() {
     try {
         const productsCollection = db.collection('products');
         const count = await productsCollection.countDocuments();
 
-        console.log(`🚗 Current cars in database: ${count}`);
+        console.log(`📦 Current products in database: ${count}`);
 
         if (count === 0) {
-            const defaultCars = [
+            const defaultProducts = [
                 {
-                    name: "Tesla Model S",
-                    price: 8999900, // $89,999.00 in cents
-                    originalPrice: 9499900, // $94,999.00 in cents
-                    category: "Electric",
-                    description: "Premium electric sedan with autopilot and long range battery",
-                    image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=400&h=400&fit=crop",
+                    name: "Classic White T-Shirt",
+                    price: 2999, // $29.99 in cents
+                    originalPrice: 3999, // $39.99 in cents
+                    category: "Clothing",
+                    description: "Premium cotton classic white t-shirt, perfect for everyday wear",
+                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
                     badge: "Popular",
                     badgeColor: "#10b981", // green
                     rating: 4.8,
@@ -386,26 +386,26 @@ async function seedProducts() {
                     createdAt: new Date()
                 },
                 {
-                    name: "BMW M3 Competition",
-                    price: 7299900, // $72,999.00 in cents
-                    originalPrice: 7599900, // $75,999.00 in cents
-                    category: "Sports",
-                    description: "High-performance sports sedan with twin-turbo engine",
-                    image: "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=400&fit=crop",
+                    name: "Denim Jeans",
+                    price: 7999, // $79.99 in cents
+                    originalPrice: 9999, // $99.99 in cents
+                    category: "Clothing",
+                    description: "High-quality denim jeans with perfect fit and comfort",
+                    image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop",
                     badge: "Best Seller",
                     badgeColor: "#f59e0b", // yellow
-                    rating: 4.7,
+                    rating: 4.6,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
                 },
                 {
-                    name: "Mercedes-Benz G-Class",
-                    price: 13999900, // $139,999.00 in cents
-                    originalPrice: 14999900, // $149,999.00 in cents
-                    category: "SUV",
-                    description: "Luxury off-road SUV with iconic design and premium features",
-                    image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=400&fit=crop",
+                    name: "Summer Dress",
+                    price: 5999, // $59.99 in cents
+                    originalPrice: 8999, // $89.99 in cents
+                    category: "Clothing",
+                    description: "Elegant summer dress perfect for casual and formal occasions",
+                    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop",
                     badge: "New",
                     badgeColor: "#3b82f6", // blue
                     rating: 4.9,
@@ -414,40 +414,40 @@ async function seedProducts() {
                     createdAt: new Date()
                 },
                 {
-                    name: "Porsche 911 Turbo S",
-                    price: 20799900, // $207,999.00 in cents
-                    originalPrice: 21999900, // $219,999.00 in cents
-                    category: "Sports",
-                    description: "Iconic sports car with turbocharged engine and all-wheel drive",
-                    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=400&fit=crop",
+                    name: "Leather Jacket",
+                    price: 12999, // $129.99 in cents
+                    originalPrice: 15999, // $159.99 in cents
+                    category: "Clothing",
+                    description: "Premium leather jacket with modern design and superior quality",
+                    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",
                     badge: "Premium",
                     badgeColor: "#8b5cf6", // purple
-                    rating: 4.9,
+                    rating: 4.7,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
                 },
                 {
-                    name: "Range Rover Evoque",
-                    price: 4299900, // $42,999.00 in cents
-                    originalPrice: 4599900, // $45,999.00 in cents
-                    category: "SUV",
-                    description: "Compact luxury SUV with modern design and advanced technology",
-                    image: "https://images.unsplash.com/photo-1494905998402-395d579af36f?w=400&h=400&fit=crop",
+                    name: "Casual Sneakers",
+                    price: 8999, // $89.99 in cents
+                    originalPrice: 11999, // $119.99 in cents
+                    category: "Footwear",
+                    description: "Comfortable casual sneakers for everyday activities",
+                    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
                     badge: "Trending",
                     badgeColor: "#ef4444", // red
-                    rating: 4.6,
+                    rating: 4.5,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
                 },
                 {
-                    name: "Audi RS6 Avant",
-                    price: 11499900, // $114,999.00 in cents
-                    originalPrice: 11999900, // $119,999.00 in cents
-                    category: "Wagon",
-                    description: "High-performance luxury wagon with quattro all-wheel drive",
-                    image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=400&fit=crop",
+                    name: "Wireless Headphones",
+                    price: 14999, // $149.99 in cents
+                    originalPrice: 19999, // $199.99 in cents
+                    category: "Electronics",
+                    description: "High-quality wireless headphones with noise cancellation",
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
                     badge: "Featured",
                     badgeColor: "#06b6d4", // cyan
                     rating: 4.8,
@@ -456,49 +456,49 @@ async function seedProducts() {
                     createdAt: new Date()
                 },
                 {
-                    name: "Lamborghini Huracán",
-                    price: 24999900, // $249,999.00 in cents
-                    originalPrice: 26999900, // $269,999.00 in cents
-                    category: "Supercar",
-                    description: "Italian supercar with V10 engine and stunning performance",
-                    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=400&fit=crop",
-                    badge: "Limited",
-                    badgeColor: "#ec4899", // pink
-                    rating: 5.0,
-                    inStock: false,
+                    name: "Smartphone Case",
+                    price: 1999, // $19.99 in cents
+                    originalPrice: 2999, // $29.99 in cents
+                    category: "Electronics",
+                    description: "Protective smartphone case with elegant design",
+                    image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=400&h=400&fit=crop",
+                    badge: "Popular",
+                    badgeColor: "#10b981", // green
+                    rating: 4.6,
+                    inStock: true,
                     active: true,
                     createdAt: new Date()
                 },
                 {
-                    name: "Ford F-150 Lightning",
-                    price: 5999900, // $59,999.00 in cents
-                    originalPrice: 6499900, // $64,999.00 in cents
-                    category: "Electric",
-                    description: "Electric pickup truck with impressive towing capacity and range",
-                    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
-                    badge: "New",
-                    badgeColor: "#3b82f6", // blue
-                    rating: 4.5,
+                    name: "Coffee Mug",
+                    price: 1299, // $12.99 in cents
+                    originalPrice: 1799, // $17.99 in cents
+                    category: "Home",
+                    description: "Premium ceramic coffee mug for your morning coffee",
+                    image: "https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=400&h=400&fit=crop",
+                    badge: "Limited",
+                    badgeColor: "#ec4899", // pink
+                    rating: 4.4,
                     inStock: true,
                     active: true,
                     createdAt: new Date()
                 }
             ];
 
-            console.log(`🌱 Inserting ${defaultCars.length} cars...`);
-            const result = await productsCollection.insertMany(defaultCars);
-            console.log(`✅ Successfully inserted ${result.insertedCount} cars`);
-            console.log("✓ Car dealership products seeded with images and details");
+            console.log(`🌱 Inserting ${defaultProducts.length} products...`);
+            const result = await productsCollection.insertMany(defaultProducts);
+            console.log(`✅ Successfully inserted ${result.insertedCount} products`);
+            console.log("✓ E-commerce products seeded with images and details");
 
-            // Log the inserted cars
-            defaultCars.forEach((car, index) => {
-                console.log(`   ${index + 1}. ${car.name} - $${(car.price / 100).toFixed(2)} (${car.category}) [${car.badge}]`);
+            // Log the inserted products
+            defaultProducts.forEach((product, index) => {
+                console.log(`   ${index + 1}. ${product.name} - $${(product.price / 100).toFixed(2)} (${product.category}) [${product.badge}]`);
             });
         } else {
-            console.log("ℹ️  Cars already exist in database, skipping seeding");
+            console.log("ℹ️  Products already exist in database, skipping seeding");
         }
     } catch (error) {
-        console.error("❌ Car seeding error:", error.message);
+        console.error("❌ Product seeding error:", error.message);
         throw error;
     }
 }
@@ -515,7 +515,7 @@ async function forceSeedProducts() {
         // Seed new products
         await seedProducts();
 
-        return { success: true, message: 'Cars force-seeded successfully' };
+        return { success: true, message: 'Products force-seeded successfully' };
     } catch (error) {
         console.error("❌ Force seed error:", error.message);
         throw error;
