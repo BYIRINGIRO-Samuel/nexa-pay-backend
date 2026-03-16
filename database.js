@@ -361,22 +361,23 @@ async function getProducts() {
     }
 }
 
-// Seed default cars with real automotive data
+// Seed default vehicles with real automotive data
 async function seedProducts() {
     try {
         const productsCollection = db.collection('products');
         const count = await productsCollection.countDocuments();
 
-        console.log(`🚗 Current cars in database: ${count}`);
+        console.log(`🚗 Current vehicles in database: ${count}`);
 
         if (count === 0) {
-            const defaultCars = [
+            const defaultVehicles = [
+                // Luxury Cars
                 {
-                    name: "Tesla Model S",
-                    price: 8999900, // $89,999.00 in cents
-                    originalPrice: 9499900, // $94,999.00 in cents
+                    name: "Tesla Model S Plaid",
+                    price: 12999900, // $129,999.00 in cents
+                    originalPrice: 13999900, // $139,999.00 in cents
                     category: "Electric",
-                    description: "Premium electric sedan with autopilot and long range battery",
+                    description: "Fastest production sedan with tri-motor all-wheel drive and 1,020 hp",
                     image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=400&h=400&fit=crop",
                     badge: "Popular",
                     badgeColor: "#10b981", // green
@@ -400,11 +401,11 @@ async function seedProducts() {
                     createdAt: new Date()
                 },
                 {
-                    name: "Mercedes-Benz G-Class",
-                    price: 13999900, // $139,999.00 in cents
-                    originalPrice: 14999900, // $149,999.00 in cents
+                    name: "Mercedes-Benz G63 AMG",
+                    price: 17999900, // $179,999.00 in cents
+                    originalPrice: 18999900, // $189,999.00 in cents
                     category: "SUV",
-                    description: "Luxury off-road SUV with iconic design and premium features",
+                    description: "Luxury off-road SUV with 577 hp V8 biturbo engine",
                     image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=400&fit=crop",
                     badge: "New",
                     badgeColor: "#3b82f6", // blue
@@ -418,7 +419,7 @@ async function seedProducts() {
                     price: 20799900, // $207,999.00 in cents
                     originalPrice: 21999900, // $219,999.00 in cents
                     category: "Sports",
-                    description: "Iconic sports car with turbocharged engine and all-wheel drive",
+                    description: "Iconic sports car with 640 hp turbocharged engine",
                     image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=400&fit=crop",
                     badge: "Premium",
                     badgeColor: "#8b5cf6", // purple
@@ -428,11 +429,11 @@ async function seedProducts() {
                     createdAt: new Date()
                 },
                 {
-                    name: "Range Rover Evoque",
-                    price: 4299900, // $42,999.00 in cents
-                    originalPrice: 4599900, // $45,999.00 in cents
+                    name: "Range Rover Sport SVR",
+                    price: 11999900, // $119,999.00 in cents
+                    originalPrice: 12999900, // $129,999.00 in cents
                     category: "SUV",
-                    description: "Compact luxury SUV with modern design and advanced technology",
+                    description: "High-performance luxury SUV with supercharged V8",
                     image: "https://images.unsplash.com/photo-1494905998402-395d579af36f?w=400&h=400&fit=crop",
                     badge: "Trending",
                     badgeColor: "#ef4444", // red
@@ -446,7 +447,7 @@ async function seedProducts() {
                     price: 11499900, // $114,999.00 in cents
                     originalPrice: 11999900, // $119,999.00 in cents
                     category: "Wagon",
-                    description: "High-performance luxury wagon with quattro all-wheel drive",
+                    description: "High-performance luxury wagon with 591 hp twin-turbo V8",
                     image: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=400&fit=crop",
                     badge: "Featured",
                     badgeColor: "#06b6d4", // cyan
@@ -456,16 +457,44 @@ async function seedProducts() {
                     createdAt: new Date()
                 },
                 {
-                    name: "Lamborghini Huracán",
+                    name: "Lamborghini Huracán EVO",
                     price: 24999900, // $249,999.00 in cents
                     originalPrice: 26999900, // $269,999.00 in cents
                     category: "Supercar",
-                    description: "Italian supercar with V10 engine and stunning performance",
+                    description: "Italian supercar with 630 hp naturally aspirated V10",
                     image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=400&fit=crop",
                     badge: "Limited",
                     badgeColor: "#ec4899", // pink
                     rating: 5.0,
-                    inStock: false,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Ferrari F8 Tributo",
+                    price: 27999900, // $279,999.00 in cents
+                    originalPrice: 29999900, // $299,999.00 in cents
+                    category: "Supercar",
+                    description: "Mid-engine supercar with 710 hp twin-turbo V8",
+                    image: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&h=400&fit=crop",
+                    badge: "Exclusive",
+                    badgeColor: "#dc2626", // red
+                    rating: 4.9,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "McLaren 720S",
+                    price: 31999900, // $319,999.00 in cents
+                    originalPrice: 33999900, // $339,999.00 in cents
+                    category: "Supercar",
+                    description: "British supercar with 710 hp twin-turbo V8 and carbon fiber body",
+                    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=400&fit=crop",
+                    badge: "Premium",
+                    badgeColor: "#8b5cf6", // purple
+                    rating: 4.8,
+                    inStock: true,
                     active: true,
                     createdAt: new Date()
                 },
@@ -474,7 +503,7 @@ async function seedProducts() {
                     price: 5999900, // $59,999.00 in cents
                     originalPrice: 6499900, // $64,999.00 in cents
                     category: "Electric",
-                    description: "Electric pickup truck with impressive towing capacity and range",
+                    description: "Electric pickup truck with 563 hp and 775 lb-ft torque",
                     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
                     badge: "New",
                     badgeColor: "#3b82f6", // blue
@@ -482,23 +511,167 @@ async function seedProducts() {
                     inStock: true,
                     active: true,
                     createdAt: new Date()
+                },
+                // Motorcycles
+                {
+                    name: "Ducati Panigale V4 S",
+                    price: 2899900, // $28,999.00 in cents
+                    originalPrice: 3199900, // $31,999.00 in cents
+                    category: "Motorcycle",
+                    description: "Italian superbike with 214 hp Desmosedici Stradale V4 engine",
+                    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+                    badge: "Racing",
+                    badgeColor: "#dc2626", // red
+                    rating: 4.9,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Kawasaki Ninja H2R",
+                    price: 5999900, // $59,999.00 in cents
+                    originalPrice: 6499900, // $64,999.00 in cents
+                    category: "Motorcycle",
+                    description: "Track-only hyperbike with supercharged 310 hp engine",
+                    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+                    badge: "Track Only",
+                    badgeColor: "#059669", // green
+                    rating: 5.0,
+                    inStock: false,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Harley-Davidson CVO Limited",
+                    price: 4699900, // $46,999.00 in cents
+                    originalPrice: 4999900, // $49,999.00 in cents
+                    category: "Motorcycle",
+                    description: "Premium touring motorcycle with 117 cubic inch Milwaukee-Eight engine",
+                    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+                    badge: "Touring",
+                    badgeColor: "#f97316", // orange
+                    rating: 4.6,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "BMW S1000RR",
+                    price: 1799900, // $17,999.00 in cents
+                    originalPrice: 1999900, // $19,999.00 in cents
+                    category: "Motorcycle",
+                    description: "German superbike with 205 hp inline-four engine and advanced electronics",
+                    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
+                    badge: "Sport",
+                    badgeColor: "#3b82f6", // blue
+                    rating: 4.7,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                // Private Jets
+                {
+                    name: "Cessna Citation CJ4",
+                    price: 999999900, // $9,999,999.00 in cents
+                    originalPrice: 1099999900, // $10,999,999.00 in cents
+                    category: "Private Jet",
+                    description: "Light business jet with seating for up to 10 passengers",
+                    image: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=400&h=400&fit=crop",
+                    badge: "Business",
+                    badgeColor: "#1f2937", // gray
+                    rating: 4.8,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Gulfstream G650ER",
+                    price: 7000000000, // $70,000,000.00 in cents
+                    originalPrice: 7500000000, // $75,000,000.00 in cents
+                    category: "Private Jet",
+                    description: "Ultra-long-range business jet with intercontinental capability",
+                    image: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=400&h=400&fit=crop",
+                    badge: "Ultra Luxury",
+                    badgeColor: "#fbbf24", // yellow
+                    rating: 5.0,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Bombardier Global 7500",
+                    price: 7300000000, // $73,000,000.00 in cents
+                    originalPrice: 7800000000, // $78,000,000.00 in cents
+                    category: "Private Jet",
+                    description: "Flagship business jet with the longest range in its class",
+                    image: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=400&h=400&fit=crop",
+                    badge: "Flagship",
+                    badgeColor: "#8b5cf6", // purple
+                    rating: 4.9,
+                    inStock: false,
+                    active: true,
+                    createdAt: new Date()
+                },
+                // Luxury Boats
+                {
+                    name: "Azimut S7",
+                    price: 299999900, // $2,999,999.00 in cents
+                    originalPrice: 329999900, // $3,299,999.00 in cents
+                    category: "Yacht",
+                    description: "70-foot luxury yacht with twin MAN V12 engines",
+                    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=400&fit=crop",
+                    badge: "Luxury",
+                    badgeColor: "#0ea5e9", // sky blue
+                    rating: 4.7,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                {
+                    name: "Sunseeker Predator 74",
+                    price: 399999900, // $3,999,999.00 in cents
+                    originalPrice: 449999900, // $4,499,999.00 in cents
+                    category: "Yacht",
+                    description: "74-foot performance yacht with triple MAN V8 engines",
+                    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&h=400&fit=crop",
+                    badge: "Performance",
+                    badgeColor: "#ef4444", // red
+                    rating: 4.8,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
+                },
+                // Luxury RV
+                {
+                    name: "Prevost H3-45 VIP",
+                    price: 199999900, // $1,999,999.00 in cents
+                    originalPrice: 219999900, // $2,199,999.00 in cents
+                    category: "RV",
+                    description: "Luxury motorcoach with custom interior and premium amenities",
+                    image: "https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=400&h=400&fit=crop",
+                    badge: "Custom",
+                    badgeColor: "#7c3aed", // violet
+                    rating: 4.6,
+                    inStock: true,
+                    active: true,
+                    createdAt: new Date()
                 }
             ];
 
-            console.log(`🌱 Inserting ${defaultCars.length} cars...`);
-            const result = await productsCollection.insertMany(defaultCars);
-            console.log(`✅ Successfully inserted ${result.insertedCount} cars`);
-            console.log("✓ Car dealership products seeded with images and details");
+            console.log(`🌱 Inserting ${defaultVehicles.length} vehicles...`);
+            const result = await productsCollection.insertMany(defaultVehicles);
+            console.log(`✅ Successfully inserted ${result.insertedCount} vehicles`);
+            console.log("✓ Luxury vehicle dealership products seeded with images and details");
 
-            // Log the inserted cars
-            defaultCars.forEach((car, index) => {
-                console.log(`   ${index + 1}. ${car.name} - $${(car.price / 100).toFixed(2)} (${car.category}) [${car.badge}]`);
+            // Log the inserted vehicles
+            defaultVehicles.forEach((vehicle, index) => {
+                console.log(`   ${index + 1}. ${vehicle.name} - $${(vehicle.price / 100).toFixed(2)} (${vehicle.category}) [${vehicle.badge}]`);
             });
         } else {
-            console.log("ℹ️  Cars already exist in database, skipping seeding");
+            console.log("ℹ️  Vehicles already exist in database, skipping seeding");
         }
     } catch (error) {
-        console.error("❌ Car seeding error:", error.message);
+        console.error("❌ Vehicle seeding error:", error.message);
         throw error;
     }
 }
